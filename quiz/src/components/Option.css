@@ -1,0 +1,20 @@
+.option{
+    background-color: #3c0e70;
+    border-radius: .5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    opacity: .8;
+    transition: 300ms;
+    border: 1px solid #ffffffa9;
+}
+
+.option:hover{
+    opacity: 1.2;
+    border: 1px solid #ffffffe0;
+}
+
+#options-container .option p{
+    margin-bottom: 0;
+}
+
