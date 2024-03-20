@@ -19,6 +19,7 @@
 #questions button{
     border: 2px solid #ffffff63;
     transition: 300ms;
+    margin: 4px;
 }
 
 #questions button:hover{

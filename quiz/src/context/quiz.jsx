@@ -9,6 +9,8 @@ const initialState = {
     currentQuestions: 0,
     score: 0,
     answerSelected: false,
+    help: false,
+    optionToHide: null,
 }
 
 const quizReducer = (state, action) => {
@@ -21,8 +23,22 @@ const quizReducer = (state, action) => {
                 gameStage: STAGES[1],
             };
 
+            case "START_GAME":
+                let quizQuestions = null
+
+                state.questions.forEach((question) => {
+                    if(question.category === action.payload) {
+                        quizQuestions = question.questions
+                    }
+                })
+                return {
+                    ...state,
+                    questions: quizQuestions,
+                    gameStage: STAGES[2],
+                }
+
         case "REORDER_QUESTIONS":
-            const reorderedQuestions = questions.sort(() => {
+            const reorderedQuestions = state.questions.sort(() => {
                 return Math.random() - 0.5
             });
 
@@ -35,7 +51,7 @@ const quizReducer = (state, action) => {
             const nextQuestion = state.currentQuestions + 1;
             let endGame = false;
 
-            if(!questions[nextQuestion]) {
+            if(!state.questions[nextQuestion]) {
                 endGame = true;
             }
 
@@ -43,8 +59,9 @@ const quizReducer = (state, action) => {
             return{
                 ...state,
                 currentQuestions: nextQuestion,
-                gameStage: endGame ? STAGES[2] : state.gameStage,
+                gameStage: endGame ? STAGES[3] : state.gameStage,
                 answerSelected: false,
+                help: false,
             }
 
             case "NEW_GAME":
@@ -53,8 +70,8 @@ const quizReducer = (state, action) => {
             case "CHECK_ANSWER":
                     if(state.answerSelected) return state;
 
-                const answer = action.payload.answer
-                const option = action.payload.option
+                const answer = action.payload.answer;
+                const option = action.payload.option;
                 let correctAnswer = 0
 
                 if(answer === option) correctAnswer = 1
@@ -64,6 +81,35 @@ const quizReducer = (state, action) => {
                     answerSelected: option, 
                 }
 
+                case "SHOW_TIP":
+                    return{
+                        ...state,
+                        help: "tip",
+                    }
+
+                    case "REMOVE_OPTION": {
+                        const questionWithoutOption = state.questions[state.currentQuestion];
+                  
+                        console.log(state.currentQuestion);
+                  
+                        console.log(questionWithoutOption);
+                  
+                        let repeat = true;
+                        let optionToHide;
+                  
+                        questionWithoutOption.options.forEach((option) => {
+                          if (option !== questionWithoutOption.answer && repeat) {
+                            optionToHide = option;
+                            repeat = false;
+                          }
+                        });
+                  
+                        return {
+                          ...state,
+                          optionToHide,
+                          help: true,
+                        };
+                      }
         default:
          return state;
 

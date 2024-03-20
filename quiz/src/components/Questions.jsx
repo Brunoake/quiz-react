@@ -17,6 +17,8 @@ const Questions = () => {
       })
     }
 
+    console.log(quizState)
+
   return  <div id='questions'>
     <p>Pergunta {quizState.currentQuestions + 1} de {quizState.questions.length}</p>
     <h2>{currentQuestion.question}</h2>
@@ -27,9 +29,21 @@ const Questions = () => {
            option={option} 
            key={option}
             answer={currentQuestion.answer}
-            selectOption={() => onSelectOption(option)}/>
+            selectOption={() => onSelectOption(option)}
+            hide={quizState.optionToHide === option ?"hide" : null}
+            />
         ))}
     </div>
+    {!quizState.answerSelected && ! quizState.help &&(
+      <>
+      {currentQuestion.tip && (<button onClick={() => dispatch({type: "SHOW_TIP"})}>Dica</button>
+      )}
+    <button onClick={() => dispatch({ type: "REMOVE_OPTION" })}>
+            Excluir uma
+          </button>
+       </>
+    )}
+   {!quizState.answerSelected && quizState.help === "tip" && ( <p>{currentQuestion.tip}</p> )}
     {quizState.answerSelected && (
       <button onClick={()  => dispatch({type: "CHANGE_QUESTION"})}>Continuar</button>
     )}
